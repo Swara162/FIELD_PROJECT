@@ -125,7 +125,6 @@ function AdminSidebar({ current, navigate }) {
     { section: "Management" },
     { id: "volunteer-management", label: "Volunteers", icon: "people" },
     { id: "event-management", label: "Events", icon: "calendar" },
-    { id: "form-management", label: "Forms", icon: "forms" },
     { section: "Tracking" },
     { id: "attendance-tracking", label: "Attendance", icon: "attendance" },
     { section: "Insights" },
@@ -185,7 +184,8 @@ function VolSidebar({ current, navigate, volunteer }) {
         <button className={`nav-item ${current === 'browse-events' ? 'active' : ''}`} onClick={() => navigate('browse-events')}><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.calendar} /></svg>Browse Events</button>
         <button className={`nav-item ${current === 'my-schedule' ? 'active' : ''}`} onClick={() => navigate('my-schedule')}><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.calendar} /></svg>My Schedule</button>
         <span className="nav-section">Records</span>
-        <button className="nav-item"><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.check} /></svg>Hours Log</button>
+        <button className={`nav-item ${current === 'participation-history' ? 'active' : ''}`} onClick={() => navigate('participation-history')}><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.reports} /></svg>Participation History</button>
+        <button className={`nav-item ${current === 'volunteer-attendance' ? 'active' : ''}`} onClick={() => navigate('volunteer-attendance')}><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.attendance} /></svg>Attendance</button>
       </nav>
       <div className="sidebar-footer">
         <div className="user-card">
@@ -523,12 +523,6 @@ function VolunteerDashboard({ navigate, volunteer }) {
     { icon: "🎨", color: "#FBE8DF", name: "Art for Seniors", date: "May 5" },
     { icon: "🌳", color: "#e4f2eb", name: "Tree Plantation", date: "May 12" },
   ];
-  const certs = [
-    { icon: "🏆", name: "Volunteer Excellence 2025", date: "Dec 2025" },
-    { icon: "🌿", name: "Environmental Champion", date: "Oct 2025" },
-    { icon: "🩺", name: "First Aid Certified", date: "Jul 2025" },
-    { icon: "📚", name: "Education Volunteer", date: "Mar 2025" },
-  ];
   const name = volunteer ? `${volunteer.firstName} ${volunteer.lastName}` : "Arjun Sharma";
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2);
 
@@ -543,9 +537,9 @@ function VolunteerDashboard({ navigate, volunteer }) {
               <div style={{ width: 72, height: 72, borderRadius: "50%", background: "rgba(255,255,255,.25)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Fraunces',serif", fontSize: "1.8rem", fontWeight: 700, color: "#fff", flexShrink: 0, border: "3px solid rgba(255,255,255,.4)" }}>{initials}</div>
               <div>
                 <div style={{ fontFamily: "'Fraunces',serif", fontSize: "1.4rem", fontWeight: 700, color: "#fff", marginBottom: 3 }}>{name}</div>
-                <div style={{ fontSize: ".85rem", color: "rgba(255,255,255,.75)", marginBottom: 12 }}>📍 Bangalore · Environment & Healthcare</div>
+                <div style={{ fontSize: ".85rem", color: "rgba(255,255,255,.75)", marginBottom: 12 }}>📍 Bangalore</div>
                 <div style={{ display: "flex", gap: 24 }}>
-                  {[["148", "HOURS"], ["23", "EVENTS"], ["4", "CERTS"]].map(([n, l]) => (
+                  {[["148", "HOURS"], ["23", "EVENTS"]].map(([n, l]) => (
                     <div key={l} style={{ textAlign: "center" }}>
                       <div style={{ fontFamily: "'Fraunces',serif", fontSize: "1.3rem", fontWeight: 700, color: "#fff" }}>{n}</div>
                       <div style={{ fontSize: ".7rem", color: "rgba(255,255,255,.65)", fontWeight: 600 }}>{l}</div>
@@ -580,7 +574,7 @@ function VolunteerDashboard({ navigate, volunteer }) {
             ))}
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 20 }}>
             <div>
               <div className="panel">
                 <div className="panel-header"><span className="panel-title">My Upcoming Events</span><span className="badge badge-amber">3 registered</span></div>
@@ -595,42 +589,16 @@ function VolunteerDashboard({ navigate, volunteer }) {
                 </div>
               </div>
               <div className="panel">
-                <div className="panel-header"><span className="panel-title">Available Events to Join</span></div>
+                <div className="panel-header"><span className="panel-title">Available Events</span></div>
                 <div className="panel-body">
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                     {avail.map((e, i) => (
-                      <div key={i} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, padding: 16, cursor: "pointer", transition: "all .2s" }}>
+                      <div key={i} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, padding: 16, transition: "all .2s" }}>
                         <div style={{ fontSize: "1.6rem", marginBottom: 10 }}>{e.icon}</div>
                         <div style={{ fontSize: ".88rem", fontWeight: 700, marginBottom: 4 }}>{e.name}</div>
                         <div style={{ fontSize: ".76rem", color: "var(--text-muted)", marginBottom: 10 }}>{e.date}</div>
-                        <button style={{ width: "100%", padding: "7px 0", borderRadius: 8, background: "var(--primary)", color: "#fff", fontFamily: "'Nunito',sans-serif", fontSize: ".78rem", fontWeight: 700, border: "none", cursor: "pointer" }}>Register</button>
                       </div>
                     ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="panel">
-                <div className="panel-header"><span className="panel-title">Impact Summary</span></div>
-                <div className="panel-body">
-                  <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                    <svg width="100" height="100" viewBox="0 0 110 110" style={{ flexShrink: 0 }}>
-                      <circle cx="55" cy="55" r="40" fill="none" stroke="var(--border)" strokeWidth="18" />
-                      <circle cx="55" cy="55" r="40" fill="none" stroke="#5E9E7A" strokeWidth="18" strokeDasharray="100 151" strokeDashoffset="0" transform="rotate(-90 55 55)" />
-                      <circle cx="55" cy="55" r="40" fill="none" stroke="#C8522A" strokeWidth="18" strokeDasharray="80 171" strokeDashoffset="-100" transform="rotate(-90 55 55)" />
-                      <circle cx="55" cy="55" r="40" fill="none" stroke="#EDB84A" strokeWidth="18" strokeDasharray="66 185" strokeDashoffset="-180" transform="rotate(-90 55 55)" />
-                      <text x="55" y="58" textAnchor="middle" fontFamily="Fraunces,serif" fontSize="14" fontWeight="700" fill="var(--text)">148h</text>
-                    </svg>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      {[["#5E9E7A", "Environment", "60h"], ["#C8522A", "Healthcare", "48h"], ["#EDB84A", "Education", "40h"]].map(([c, l, v]) => (
-                        <div key={l} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: ".82rem" }}>
-                          <div style={{ width: 10, height: 10, borderRadius: "50%", background: c, flexShrink: 0 }}></div>
-                          <span style={{ color: "var(--text-muted)", width: 70 }}>{l}</span>
-                          <span style={{ fontWeight: 700, marginLeft: "auto" }}>{v}</span>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -1073,6 +1041,7 @@ function EventManagement({ navigate }) {
    PAGE: EVENT DETAILS
 ───────────────────────────────────────────── */
 function EventDetails({ navigate }) {
+  const [showAddVolModal, setShowAddVolModal] = useState(false);
   const vols = [
     { name: "Arjun Sharma", email: "arjun.s@email.com", checked: true },
     { name: "Priya Mehta", email: "priya.m@email.com", checked: true },
@@ -1102,7 +1071,6 @@ function EventDetails({ navigate }) {
           </div>
           <div style={{ display: "flex", gap: 10 }}>
             <button className="btn btn-ghost">✏️ Edit Event</button>
-            <button className="btn btn-primary">+ Assign Volunteers</button>
           </div>
         </div>
         <div className="content">
@@ -1148,7 +1116,7 @@ function EventDetails({ navigate }) {
                 </div>
               </div>
               <div className="panel">
-                <div className="panel-header"><span className="panel-title">Assigned Volunteers (18)</span><button className="btn btn-primary" style={{ fontSize: ".8rem", padding: "7px 14px" }}>+ Add</button></div>
+                <div className="panel-header"><span className="panel-title">Assigned Volunteers (18)</span><button onClick={() => setShowAddVolModal(true)} className="btn btn-primary" style={{ fontSize: ".8rem", padding: "7px 14px" }}>+ Add</button></div>
                 <table>
                   <thead><tr><th>Volunteer</th><th>Status</th><th></th></tr></thead>
                   <tbody>
@@ -1195,6 +1163,33 @@ function EventDetails({ navigate }) {
           </div>
         </div>
       </div>
+      {showAddVolModal && (
+        <div className="modal-overlay" onClick={() => setShowAddVolModal(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">Add Volunteer</span>
+              <button className="modal-close" onClick={() => setShowAddVolModal(false)}>✕</button>
+            </div>
+            <div className="form-field">
+              <label>Select Volunteer</label>
+              <div className="input-wrap">
+                <svg viewBox="0 0 24 24"><path d={ICONS.people} /></svg>
+                <select style={{ padding: "12px 14px 12px 42px", width: "100%", border: "2px solid var(--border)", borderRadius: "12px", background: "var(--surface)", fontFamily: "'Nunito',sans-serif" }}>
+                  <option value="">Select a volunteer to assign...</option>
+                  <option>Rahul Menon</option>
+                  <option>Riya Desai</option>
+                  <option>Siddharth Kumar</option>
+                  <option>Ananya Iyer</option>
+                </select>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 24 }}>
+              <button className="btn btn-ghost" onClick={() => setShowAddVolModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={() => { alert("Volunteer assigned"); setShowAddVolModal(false); }}>Add</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1674,6 +1669,132 @@ function MySchedule({ navigate, volunteer }) {
 }
 
 /* ─────────────────────────────────────────────
+   PAGE: PARTICIPATION HISTORY (VOLUNTEER)
+───────────────────────────────────────────── */
+function ParticipationHistory({ navigate, volunteer }) {
+  const history = [
+    { name: "Tree Plantation Drive", date: "Mar 20, 2026", hours: 4, role: "Planter" },
+    { name: "Art Therapy for Seniors", date: "Mar 15, 2026", hours: 3, role: "Coordinator" },
+    { name: "Free Medical Check-Up Camp", date: "Mar 10, 2026", hours: 6, role: "Logistics Support" },
+  ];
+
+  return (
+    <div style={{ display: "flex" }}>
+      <VolSidebar current="participation-history" navigate={navigate} volunteer={volunteer} />
+      <div className="main-wrap">
+        <div className="topbar">
+          <span className="topbar-title">Participation History</span>
+        </div>
+        <div className="content">
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20 }}>
+            <div className="panel">
+              <div className="panel-header"><span className="panel-title">Previous Events</span></div>
+              <div className="panel-body">
+                <table style={{ minWidth: "100%" }}>
+                  <thead>
+                    <tr>
+                      <th>Event Name</th>
+                      <th>Date</th>
+                      <th>Role</th>
+                      <th style={{ textAlign: "right" }}>Hours Logged</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((h, i) => (
+                      <tr key={i}>
+                        <td style={{ fontWeight: 700 }}>{h.name}</td>
+                        <td style={{ color: "var(--text-muted)" }}>{h.date}</td>
+                        <td>{h.role}</td>
+                        <td style={{ textAlign: "right", fontWeight: 700, color: "var(--primary)" }}>{h.hours}h</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <div className="panel">
+                <div className="panel-header"><span className="panel-title">Impact Summary</span></div>
+                <div className="panel-body">
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
+                    <svg width="120" height="120" viewBox="0 0 110 110" style={{ flexShrink: 0 }}>
+                      <circle cx="55" cy="55" r="40" fill="none" stroke="var(--border)" strokeWidth="18" />
+                      <circle cx="55" cy="55" r="40" fill="none" stroke="#5E9E7A" strokeWidth="18" strokeDasharray="100 151" strokeDashoffset="0" transform="rotate(-90 55 55)" />
+                      <circle cx="55" cy="55" r="40" fill="none" stroke="#C8522A" strokeWidth="18" strokeDasharray="80 171" strokeDashoffset="-100" transform="rotate(-90 55 55)" />
+                      <circle cx="55" cy="55" r="40" fill="none" stroke="#EDB84A" strokeWidth="18" strokeDasharray="66 185" strokeDashoffset="-180" transform="rotate(-90 55 55)" />
+                      <text x="55" y="58" textAnchor="middle" fontFamily="Fraunces,serif" fontSize="16" fontWeight="700" fill="var(--text)">148h</text>
+                    </svg>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%" }}>
+                      {[["#5E9E7A", "Environment", "60h"], ["#C8522A", "Healthcare", "48h"], ["#EDB84A", "Education", "40h"]].map(([c, l, v]) => (
+                        <div key={l} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: ".9rem" }}>
+                          <div style={{ width: 12, height: 12, borderRadius: "50%", background: c, flexShrink: 0 }}></div>
+                          <span style={{ color: "var(--text-muted)", flex: 1 }}>{l}</span>
+                          <span style={{ fontWeight: 700 }}>{v}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   PAGE: ATTENDANCE (VOLUNTEER)
+───────────────────────────────────────────── */
+function VolunteerAttendance({ navigate, volunteer }) {
+  const attendance = [
+    { name: "Tree Plantation Drive", date: "Mar 20, 2026", status: "Present" },
+    { name: "Art Therapy for Seniors", date: "Mar 15, 2026", status: "Present" },
+    { name: "Free Medical Check-Up Camp", date: "Mar 10, 2026", status: "Absent" },
+    { name: "Beach Clean-up", date: "Mar 1, 2026", status: "Present" },
+  ];
+
+  return (
+    <div style={{ display: "flex" }}>
+      <VolSidebar current="volunteer-attendance" navigate={navigate} volunteer={volunteer} />
+      <div className="main-wrap">
+        <div className="topbar">
+          <span className="topbar-title">My Attendance</span>
+        </div>
+        <div className="content">
+          <div className="panel" style={{ maxWidth: 800 }}>
+            <div className="panel-header"><span className="panel-title">Attendance Record</span></div>
+            <div className="panel-body">
+              <table style={{ minWidth: "100%" }}>
+                <thead>
+                  <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th style={{ textAlign: "right" }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {attendance.map((a, i) => (
+                    <tr key={i}>
+                      <td style={{ fontWeight: 700 }}>{a.name}</td>
+                      <td style={{ color: "var(--text-muted)" }}>{a.date}</td>
+                      <td style={{ textAlign: "right" }}>
+                        <span className={`badge ${a.status === "Present" ? "badge-green" : "badge-red"}`}>{a.status}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    APP ROUTER
 ───────────────────────────────────────────── */
 export default function App() {
@@ -1695,6 +1816,8 @@ export default function App() {
     "volunteer-dashboard": <VolunteerDashboard navigate={navigate} volunteer={volunteer} />,
     "browse-events": <BrowseEvents navigate={navigate} volunteer={volunteer} />,
     "my-schedule": <MySchedule navigate={navigate} volunteer={volunteer} />,
+    "participation-history": <ParticipationHistory navigate={navigate} volunteer={volunteer} />,
+    "volunteer-attendance": <VolunteerAttendance navigate={navigate} volunteer={volunteer} />,
     "admin-login": <AdminLogin navigate={navigate} />,
     "admin-dashboard": <AdminDashboard navigate={navigate} />,
     "volunteer-management": <VolunteerManagement navigate={navigate} />,
