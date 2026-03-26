@@ -539,7 +539,7 @@ function VolunteerDashboard({ navigate, volunteer }) {
                 <div style={{ fontFamily: "'Fraunces',serif", fontSize: "1.4rem", fontWeight: 700, color: "#fff", marginBottom: 3 }}>{name}</div>
                 <div style={{ fontSize: ".85rem", color: "rgba(255,255,255,.75)", marginBottom: 12 }}>📍 Bangalore</div>
                 <div style={{ display: "flex", gap: 24 }}>
-                  {[["148", "HOURS"], ["23", "EVENTS"]].map(([n, l]) => (
+                  {[["13", "HOURS"], ["3", "EVENTS"]].map(([n, l]) => (
                     <div key={l} style={{ textAlign: "center" }}>
                       <div style={{ fontFamily: "'Fraunces',serif", fontSize: "1.3rem", fontWeight: 700, color: "#fff" }}>{n}</div>
                       <div style={{ fontSize: ".7rem", color: "rgba(255,255,255,.65)", fontWeight: 600 }}>{l}</div>
@@ -1673,10 +1673,33 @@ function MySchedule({ navigate, volunteer }) {
 ───────────────────────────────────────────── */
 function ParticipationHistory({ navigate, volunteer }) {
   const history = [
-    { name: "Tree Plantation Drive", date: "Mar 20, 2026", hours: 4, role: "Planter" },
-    { name: "Art Therapy for Seniors", date: "Mar 15, 2026", hours: 3, role: "Coordinator" },
-    { name: "Free Medical Check-Up Camp", date: "Mar 10, 2026", hours: 6, role: "Logistics Support" },
+    { name: "Tree Plantation Drive", date: "Mar 20, 2026", hours: 4, role: "Planter", category: "Environment" },
+    { name: "Art Therapy for Seniors", date: "Mar 15, 2026", hours: 3, role: "Coordinator", category: "Education" },
+    { name: "Free Medical Check-Up Camp", date: "Mar 10, 2026", hours: 6, role: "Logistics Support", category: "Healthcare" },
   ];
+
+  const categories = {
+    Environment: { color: "#5E9E7A", total: 0 },
+    Healthcare: { color: "#C8522A", total: 0 },
+    Education: { color: "#EDB84A", total: 0 }
+  };
+  
+  let totalHours = 0;
+  history.forEach(h => {
+    if (categories[h.category]) {
+      categories[h.category].total += h.hours;
+    }
+    totalHours += h.hours;
+  });
+
+  let offset = 0;
+  const arcs = Object.entries(categories).map(([label, { color, total }]) => {
+    const dash = totalHours ? (total / totalHours) * 251.3 : 0;
+    const gap = 251.3 - dash;
+    const arc = { color, dash, gap, offset: -offset, label, total };
+    offset += dash;
+    return arc;
+  }).filter(a => a.total > 0);
 
   return (
     <div style={{ display: "flex" }}>
@@ -1719,17 +1742,17 @@ function ParticipationHistory({ navigate, volunteer }) {
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
                     <svg width="120" height="120" viewBox="0 0 110 110" style={{ flexShrink: 0 }}>
                       <circle cx="55" cy="55" r="40" fill="none" stroke="var(--border)" strokeWidth="18" />
-                      <circle cx="55" cy="55" r="40" fill="none" stroke="#5E9E7A" strokeWidth="18" strokeDasharray="100 151" strokeDashoffset="0" transform="rotate(-90 55 55)" />
-                      <circle cx="55" cy="55" r="40" fill="none" stroke="#C8522A" strokeWidth="18" strokeDasharray="80 171" strokeDashoffset="-100" transform="rotate(-90 55 55)" />
-                      <circle cx="55" cy="55" r="40" fill="none" stroke="#EDB84A" strokeWidth="18" strokeDasharray="66 185" strokeDashoffset="-180" transform="rotate(-90 55 55)" />
-                      <text x="55" y="58" textAnchor="middle" fontFamily="Fraunces,serif" fontSize="16" fontWeight="700" fill="var(--text)">148h</text>
+                      {arcs.map((arc, i) => (
+                        <circle key={i} cx="55" cy="55" r="40" fill="none" stroke={arc.color} strokeWidth="18" strokeDasharray={`${arc.dash} ${arc.gap}`} strokeDashoffset={arc.offset} transform="rotate(-90 55 55)" />
+                      ))}
+                      <text x="55" y="58" textAnchor="middle" fontFamily="Fraunces,serif" fontSize="16" fontWeight="700" fill="var(--text)">{totalHours}h</text>
                     </svg>
                     <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%" }}>
-                      {[["#5E9E7A", "Environment", "60h"], ["#C8522A", "Healthcare", "48h"], ["#EDB84A", "Education", "40h"]].map(([c, l, v]) => (
-                        <div key={l} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: ".9rem" }}>
-                          <div style={{ width: 12, height: 12, borderRadius: "50%", background: c, flexShrink: 0 }}></div>
-                          <span style={{ color: "var(--text-muted)", flex: 1 }}>{l}</span>
-                          <span style={{ fontWeight: 700 }}>{v}</span>
+                      {arcs.map(arc => (
+                        <div key={arc.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: ".9rem" }}>
+                          <div style={{ width: 12, height: 12, borderRadius: "50%", background: arc.color, flexShrink: 0 }}></div>
+                          <span style={{ color: "var(--text-muted)", flex: 1 }}>{arc.label}</span>
+                          <span style={{ fontWeight: 700 }}>{arc.total}h</span>
                         </div>
                       ))}
                     </div>
