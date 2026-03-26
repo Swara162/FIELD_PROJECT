@@ -167,7 +167,7 @@ function AdminSidebar({ current, navigate }) {
 /* ─────────────────────────────────────────────
    VOLUNTEER SIDEBAR
 ───────────────────────────────────────────── */
-function VolSidebar({ navigate, volunteer }) {
+function VolSidebar({ current, navigate, volunteer }) {
   const name = volunteer ? `${volunteer.firstName} ${volunteer.lastName}` : "Arjun Sharma";
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2);
   return (
@@ -180,12 +180,11 @@ function VolSidebar({ navigate, volunteer }) {
       </div>
       <nav className="sidebar-nav">
         <span className="nav-section">My Dashboard</span>
-        <button className="nav-item active"><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.home} /></svg>Home</button>
+        <button className={`nav-item ${current === 'volunteer-dashboard' || !current ? 'active' : ''}`} onClick={() => navigate('volunteer-dashboard')}><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.home} /></svg>Home</button>
         <span className="nav-section">Participate</span>
-        <button className="nav-item"><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.calendar} /></svg>Browse Events</button>
-        <button className="nav-item"><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.calendar} /></svg>My Schedule</button>
+        <button className={`nav-item ${current === 'browse-events' ? 'active' : ''}`} onClick={() => navigate('browse-events')}><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.calendar} /></svg>Browse Events</button>
+        <button className={`nav-item ${current === 'my-schedule' ? 'active' : ''}`} onClick={() => navigate('my-schedule')}><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.calendar} /></svg>My Schedule</button>
         <span className="nav-section">Records</span>
-        <button className="nav-item"><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.shield} /></svg>Certificates</button>
         <button className="nav-item"><svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "currentColor" }}><path d={ICONS.check} /></svg>Hours Log</button>
       </nav>
       <div className="sidebar-footer">
@@ -535,7 +534,7 @@ function VolunteerDashboard({ navigate, volunteer }) {
 
   return (
     <div style={{ display: "flex" }}>
-      <VolSidebar navigate={navigate} volunteer={volunteer} />
+      <VolSidebar current="volunteer-dashboard" navigate={navigate} volunteer={volunteer} />
       <div className="main-wrap">
         <div className="topbar"><span className="topbar-title">My Dashboard</span></div>
         <div className="content">
@@ -612,27 +611,27 @@ function VolunteerDashboard({ navigate, volunteer }) {
               </div>
             </div>
             <div>
-              <div className="panel" style={{ marginBottom: 20 }}>
-                <div className="panel-header"><span className="panel-title">Certificates</span></div>
-                <div className="panel-body">
-                  {certs.map((c, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < certs.length - 1 ? "1px solid var(--border)" : "none" }}>
-                      <div style={{ fontSize: "1.4rem" }}>{c.icon}</div>
-                      <div><div style={{ fontSize: ".86rem", fontWeight: 700 }}>{c.name}</div><div style={{ fontSize: ".74rem", color: "var(--text-muted)" }}>{c.date}</div></div>
-                      <a href="#" style={{ marginLeft: "auto", fontSize: ".78rem", color: "var(--primary)", fontWeight: 600 }}>↓ PDF</a>
-                    </div>
-                  ))}
-                </div>
-              </div>
               <div className="panel">
                 <div className="panel-header"><span className="panel-title">Impact Summary</span></div>
                 <div className="panel-body">
-                  {[["Environment", "60 hrs", 60, "var(--secondary)"], ["Healthcare", "48 hrs", 48, "var(--primary)"], ["Education", "40 hrs", 40, "var(--accent)"]].map(([l, v, p, c]) => (
-                    <div key={l} style={{ marginBottom: 14 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: ".82rem", marginBottom: 6 }}><span style={{ fontWeight: 700 }}>{l}</span><span style={{ color: "var(--text-muted)" }}>{v}</span></div>
-                      <div style={{ height: 8, background: "var(--border)", borderRadius: 4, overflow: "hidden" }}><div style={{ height: "100%", width: `${p}%`, background: c, borderRadius: 4 }}></div></div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+                    <svg width="100" height="100" viewBox="0 0 110 110" style={{ flexShrink: 0 }}>
+                      <circle cx="55" cy="55" r="40" fill="none" stroke="var(--border)" strokeWidth="18" />
+                      <circle cx="55" cy="55" r="40" fill="none" stroke="#5E9E7A" strokeWidth="18" strokeDasharray="100 151" strokeDashoffset="0" transform="rotate(-90 55 55)" />
+                      <circle cx="55" cy="55" r="40" fill="none" stroke="#C8522A" strokeWidth="18" strokeDasharray="80 171" strokeDashoffset="-100" transform="rotate(-90 55 55)" />
+                      <circle cx="55" cy="55" r="40" fill="none" stroke="#EDB84A" strokeWidth="18" strokeDasharray="66 185" strokeDashoffset="-180" transform="rotate(-90 55 55)" />
+                      <text x="55" y="58" textAnchor="middle" fontFamily="Fraunces,serif" fontSize="14" fontWeight="700" fill="var(--text)">148h</text>
+                    </svg>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {[["#5E9E7A", "Environment", "60h"], ["#C8522A", "Healthcare", "48h"], ["#EDB84A", "Education", "40h"]].map(([c, l, v]) => (
+                        <div key={l} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: ".82rem" }}>
+                          <div style={{ width: 10, height: 10, borderRadius: "50%", background: c, flexShrink: 0 }}></div>
+                          <span style={{ color: "var(--text-muted)", width: 70 }}>{l}</span>
+                          <span style={{ fontWeight: 700, marginLeft: "auto" }}>{v}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -874,7 +873,7 @@ function VolunteerManagement({ navigate }) {
           <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
             <div style={{ overflowX: "auto" }}>
               <table>
-                <thead><tr><th>Volunteer</th><th>Status</th><th>Area</th><th>Skills</th><th>Hours</th><th>Events</th><th>Joined</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Volunteer</th><th>Status</th><th>Skills</th><th>Hours</th><th>Events</th><th>Joined</th><th>Actions</th></tr></thead>
                 <tbody>
                   {filtered.map((v, i) => (
                     <tr key={i}>
@@ -883,7 +882,6 @@ function VolunteerManagement({ navigate }) {
                         <div><div style={{ fontSize: ".88rem", fontWeight: 700 }}>{v.name}</div><div style={{ fontSize: ".74rem", color: "var(--text-muted)" }}>{v.email}</div></div>
                       </div></td>
                       <td><span className={`badge ${statusBadge[v.status]}`}>{v.status}</span></td>
-                      <td style={{ fontSize: ".84rem" }}>{v.area}</td>
                       <td>{v.skills.map(s => <span key={s} style={{ display: "inline-block", background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6, padding: "2px 8px", fontSize: ".7rem", color: "var(--text-muted)", fontWeight: 600, margin: 2 }}>{s}</span>)}</td>
                       <td style={{ fontWeight: 700, fontSize: ".88rem" }}>{v.hours} hrs</td>
                       <td style={{ fontSize: ".88rem" }}>{v.events}</td>
@@ -928,7 +926,7 @@ function VolunteerManagement({ navigate }) {
               </div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-              {[["Area", modalVol.area], ["Joined", modalVol.joined], ["Hours Logged", `${modalVol.hours} hrs`], ["Events Attended", modalVol.events]].map(([l, v]) => (
+              {[["Joined", modalVol.joined], ["Hours Logged", `${modalVol.hours} hrs`], ["Events Attended", modalVol.events]].map(([l, v]) => (
                 <div key={l} style={{ background: "var(--bg)", borderRadius: 8, padding: "10px 14px" }}>
                   <div style={{ fontSize: ".7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: .5, color: "var(--text-muted)", marginBottom: 3 }}>{l}</div>
                   <div style={{ fontSize: ".88rem", fontWeight: 600 }}>{v}</div>
@@ -1587,6 +1585,95 @@ function AttendanceTracking({ navigate }) {
 }
 
 /* ─────────────────────────────────────────────
+   PAGE: BROWSE EVENTS (VOLUNTEER)
+───────────────────────────────────────────── */
+function BrowseEvents({ navigate, volunteer }) {
+  const avail = [
+    { icon: "🏥", color: "#f3e8fd", name: "Community Health Camp", date: "Apr 22, 2026", time: "9:00 AM", location: "Koramangala", slots: "3 left" },
+    { icon: "💡", color: "#e8f0fe", name: "Skill Development Workshop", date: "Apr 28, 2026", time: "2:00 PM", location: "Indiranagar", slots: "6 left" },
+    { icon: "🎨", color: "#FBE8DF", name: "Art Therapy for Seniors", date: "May 5, 2026", time: "11:00 AM", location: "HSR Layout", slots: "10 left" },
+    { icon: "🌳", color: "#e4f2eb", name: "Tree Plantation Drive", date: "May 12, 2026", time: "7:00 AM", location: "JP Nagar", slots: "Full" },
+  ];
+
+  return (
+    <div style={{ display: "flex" }}>
+      <VolSidebar current="browse-events" navigate={navigate} volunteer={volunteer} />
+      <div className="main-wrap">
+        <div className="topbar"><span className="topbar-title">Browse Events</span></div>
+        <div className="content">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 20 }}>
+            {avail.map((e, i) => (
+              <div key={i} className="panel" style={{ cursor: "pointer", transition: "all .2s", marginBottom: 0 }}>
+                <div style={{ padding: "24px 24px 16px", display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+                  <div style={{ width: 50, height: 50, borderRadius: 12, background: e.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem" }}>{e.icon}</div>
+                  <span className={`badge ${e.slots === 'Full' ? 'badge-red' : 'badge-green'}`}>{e.slots}</span>
+                </div>
+                <div style={{ padding: "0 24px 20px" }}>
+                  <div style={{ fontFamily: "'Fraunces',serif", fontSize: "1.1rem", fontWeight: 700, marginBottom: 12, height: 46 }}>{e.name}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 18 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: ".8rem", color: "var(--text-muted)" }}><svg viewBox="0 0 24 24" style={{ width: 14, height: 14, fill: "currentColor" }}><path d={ICONS.calendar} /></svg>{e.date} · {e.time}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: ".8rem", color: "var(--text-muted)" }}><svg viewBox="0 0 24 24" style={{ width: 14, height: 14, fill: "currentColor" }}><path d={ICONS.pin} /></svg>{e.location}</div>
+                  </div>
+                  <button className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={e.slots === "Full"}>{e.slots === "Full" ? "Waitlist" : "Register Now"}</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   PAGE: MY SCHEDULE (VOLUNTEER)
+───────────────────────────────────────────── */
+function MySchedule({ navigate, volunteer }) {
+  const myEvents = [
+    { icon: "🌿", color: "#e4f2eb", name: "Community Park Clean-Up Drive", date: "Apr 3, 2026", time: "8:00 AM", location: "Cubbon Park", status: "Upcoming", host: "Environment Dept." },
+    { icon: "📚", color: "#FBE8DF", name: "Children's Reading Workshop", date: "Apr 8, 2026", time: "10:00 AM", location: "City Library", status: "Upcoming", host: "Education Org" },
+    { icon: "🍱", color: "#FDF3D8", name: "Food Distribution Drive", date: "Apr 15, 2026", time: "6:00 AM", location: "Whitefield", status: "Active", host: "NGO Hub" },
+  ];
+
+  return (
+    <div style={{ display: "flex" }}>
+      <VolSidebar current="my-schedule" navigate={navigate} volunteer={volunteer} />
+      <div className="main-wrap">
+        <div className="topbar">
+          <span className="topbar-title">My Schedule</span>
+        </div>
+        <div className="content">
+          <div className="panel">
+            <div className="panel-header"><span className="panel-title">Registered Events</span></div>
+            <div className="panel-body" style={{ padding: 0 }}>
+              {myEvents.map((e, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 20, padding: "20px 24px", borderBottom: i < myEvents.length - 1 ? "1px solid var(--border)" : "none", transition: "background .15s" }} onMouseEnter={ev => ev.currentTarget.style.background = "var(--surface-2)"} onMouseLeave={ev => ev.currentTarget.style.background = "var(--surface)"}>
+                  <div style={{ width: 56, height: 56, borderRadius: 14, background: e.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem" }}>{e.icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                      <span style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--text)" }}>{e.name}</span>
+                      <span className={`badge ${e.status === 'Active' ? 'badge-orange' : 'badge-amber'}`}>{e.status}</span>
+                    </div>
+                    <div style={{ display: "flex", gap: 16, fontSize: ".85rem", color: "var(--text-muted)" }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 5 }}><svg viewBox="0 0 24 24" style={{ width: 14, height: 14, fill: "currentColor" }}><path d={ICONS.calendar} /></svg>{e.date} · {e.time}</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: 5 }}><svg viewBox="0 0 24 24" style={{ width: 14, height: 14, fill: "currentColor" }}><path d={ICONS.pin} /></svg>{e.location}</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: 5 }}><svg viewBox="0 0 24 24" style={{ width: 14, height: 14, fill: "currentColor" }}><path d={ICONS.people} /></svg>{e.host}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <button className="btn btn-ghost" style={{ padding: "8px 16px" }}>View Details</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    APP ROUTER
 ───────────────────────────────────────────── */
 export default function App() {
@@ -1594,7 +1681,7 @@ export default function App() {
   const [volunteer, setVolunteer] = useState(null);
 
   function navigate(p) {
-    if (p === "volunteer-dashboard") {
+    if (p === "volunteer-dashboard" || p === "browse-events" || p === "my-schedule") {
       const v = JSON.parse(localStorage.getItem("vh_current_volunteer") || "null");
       setVolunteer(v);
     }
@@ -1606,6 +1693,8 @@ export default function App() {
     "volunteer-login": <VolunteerLogin navigate={navigate} />,
     "volunteer-register": <VolunteerRegister navigate={navigate} />,
     "volunteer-dashboard": <VolunteerDashboard navigate={navigate} volunteer={volunteer} />,
+    "browse-events": <BrowseEvents navigate={navigate} volunteer={volunteer} />,
+    "my-schedule": <MySchedule navigate={navigate} volunteer={volunteer} />,
     "admin-login": <AdminLogin navigate={navigate} />,
     "admin-dashboard": <AdminDashboard navigate={navigate} />,
     "volunteer-management": <VolunteerManagement navigate={navigate} />,
